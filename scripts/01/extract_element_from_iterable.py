@@ -1,3 +1,5 @@
+from pprint import pprint
+
 # 用星号来表示变成元素个数
 grades = [10, 20, 30, 40, 50, 60]
 first, *middle, last = grades
