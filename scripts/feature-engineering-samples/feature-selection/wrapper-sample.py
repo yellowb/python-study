@@ -2,7 +2,6 @@ print(__doc__)
 
 import matplotlib.pyplot as plt
 from sklearn.svm import SVC
-from sklearn.cross_validation import StratifiedKFold
 from sklearn.feature_selection import RFECV
 from sklearn.datasets import make_classification
 
@@ -11,11 +10,13 @@ X, y = make_classification(n_samples=1000, n_features=25, n_informative=3,
                            n_redundant=2, n_repeated=0, n_classes=8,
                            n_clusters_per_class=1, random_state=0)
 
+print(X.shape)
+
 # Create the RFE object and compute a cross-validated score.
 svc = SVC(kernel="linear")
 # The "accuracy" scoring is proportional to the number of correct
 # classifications
-rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(y, 2),
+rfecv = RFECV(estimator=svc, step=1, cv=5,
               scoring='accuracy')
 rfecv.fit(X, y)
 
