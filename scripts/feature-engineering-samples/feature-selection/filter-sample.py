@@ -14,5 +14,5 @@ X_new = SelectKBest(chi2, k=2).fit_transform(X, y)
 print(X_new.shape)
 
 # select top 10% features
-X_new_percent = SelectPercentile(chi2, percentile=10).fit_transform(X, y)
+X_new_percent = SelectPercentile(chi2, percentile=50).fit_transform(X, y)
 print(X_new_percent.shape)
