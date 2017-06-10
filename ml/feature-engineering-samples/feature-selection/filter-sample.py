@@ -16,3 +16,6 @@ print(X_new.shape)
 # select top 10% features
 X_new_percent = SelectPercentile(chi2, percentile=50).fit_transform(X, y)
 print(X_new_percent.shape)
+
+print(X[0:5])
+print(X_new[0:5])

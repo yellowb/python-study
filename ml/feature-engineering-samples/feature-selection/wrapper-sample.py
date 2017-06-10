@@ -6,6 +6,7 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.linear_model import RidgeClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import ExtraTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import RFECV
 from sklearn.datasets import make_classification
 
@@ -22,9 +23,10 @@ sgd = SGDClassifier()
 ridge = RidgeClassifier()
 dTree = DecisionTreeClassifier()
 eTree = ExtraTreeClassifier()
+rf = RandomForestClassifier(n_estimators=100, n_jobs=-1)
 # The "accuracy" scoring is proportional to the number of correct
 # classifications
-rfecv = RFECV(estimator=sgd, step=1, cv=3,
+rfecv = RFECV(estimator=rf, step=1, cv=3,
               scoring='accuracy')
 rfecv.fit(X, y)
 

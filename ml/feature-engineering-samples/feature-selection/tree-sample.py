@@ -20,7 +20,7 @@ from sklearn.preprocessing import Normalizer
 
 # from sklearn.cross_validation import train_test_split
 
-tree = NuSVC()
+tree = RandomForestClassifier(n_estimators=10, n_jobs=-1)
 iris = load_iris()
 normalizer = Normalizer()
 
@@ -34,7 +34,7 @@ X = normalizer.fit_transform(X)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
 
 tree.fit(X_train, y_train)
-# print(tree.feature_importances_)
+print(tree.feature_importances_)
 print(tree.score(X_test, y_test))
 
 scores = cross_val_score(tree, X, y, cv=5)
