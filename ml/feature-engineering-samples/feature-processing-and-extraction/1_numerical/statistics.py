@@ -1,4 +1,4 @@
-import pandas as pd
+import panda_s as pd
 import numpy as np
 
 data = pd.Series(np.random.random_integers(low=0, high=1000, size=1000))

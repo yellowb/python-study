@@ -26,6 +26,17 @@ def func_return_multiple(x):
 a1, a2 = func_return_multiple(9)
 print(a1, a2)
 
+# function with default arg
+def my_abs_with_default(x=0):
+    if x >= 0:
+        return x
+    else:
+        return -x
+
+print(my_abs_with_default())
+
+
+
 
 
 

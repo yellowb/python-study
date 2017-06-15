@@ -1,6 +1,14 @@
 # range to array
 print(list(range(9)));
 
+l = []
+l.append(1)
+l.append(2)
+l.append(1)
+print(l)
+l.sort()
+print(l)
+
 # loop increase
 sum = 0
 for i in range(10001):
