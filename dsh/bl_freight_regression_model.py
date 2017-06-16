@@ -25,11 +25,11 @@ def do():
     train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_train_input.csv')
     test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_test_input.csv')
 
-    train_data = train_data.drop(['IDX'], axis=1)
-    test_data = test_data.drop(['IDX'], axis=1)
+    # train_data = train_data.drop(['IDX'], axis=1)
+    # test_data = test_data.drop(['IDX'], axis=1)
 
-    train_data = train_data[train_data["TIME_USED"] <= 1500]
-    test_data = test_data[test_data["TIME_USED"] <= 1500]
+    train_data = train_data[train_data["TIME_USED"] <= 1000]
+    test_data = test_data[test_data["TIME_USED"] <= 1000]
 
     train_data['TIME_USED'] = train_data['TIME_USED'] / 60
     test_data['TIME_USED'] = test_data['TIME_USED'] / 60
@@ -50,9 +50,9 @@ def do():
     # regressor = SGDRegressor(l1_ratio=0.1)
     # regressor = Ridge()
     # regressor = SVR()
-    regressor = RandomForestRegressor()
+    # regressor = RandomForestRegressor()
     # regressor = AdaBoostRegressor()
-    # regressor = GradientBoostingRegressor()
+    regressor = GradientBoostingRegressor(n_estimators=400, max_depth=4, loss='huber')
     # regressor = BaggingRegressor()
 
     # 用训练集做交叉验证
