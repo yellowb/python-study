@@ -35,4 +35,4 @@ print(skill_groups_array_encoded)
 print('rows: ', len(skill_groups_array_encoded))
 print('columns: ', len(skill_groups_array_encoded[0]))
 
-print(mlb.get_params())
+print(mlb.classes_)

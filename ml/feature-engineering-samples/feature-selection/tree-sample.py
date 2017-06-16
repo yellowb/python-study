@@ -1,5 +1,5 @@
 import numpy as np
-from panda_s import DataFrame
+from pandas import DataFrame
 from sklearn.datasets import load_iris
 from sklearn import metrics
 
