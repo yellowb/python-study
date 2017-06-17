@@ -20,39 +20,37 @@ from sklearn.metrics import r2_score
 from pandas import DataFrame
 import pandas as pd
 
+import matplotlib.pyplot as plt
+from sklearn.feature_selection import RFECV
+
 
 def do():
     train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_train_input.csv')
     test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_test_input.csv')
 
-    drop_col_names = ['Global-SystemAdmin', 'AWAY_TIME', 'AWAY_COUNT', 'AWAY_MEDIAN', 'AWAY_MEAN']
-
+    drop_col_names = ['Global-SystemAdmin'
+        # , 'AWAY_TIME', 'AWAY_COUNT', 'AWAY_MEDIAN', 'AWAY_MEAN'
+                      ]
     train_data = train_data.drop(drop_col_names, axis=1)
     test_data = test_data.drop(drop_col_names, axis=1)
 
+    # Drop the 1st index col
     train_data = train_data.drop(train_data.columns[0], axis=1)
     test_data = test_data.drop(test_data.columns[0], axis=1)
 
-
-
-
+    # Filter the Timeused <= 1000s
     train_data = train_data[train_data["TIME_USED"] <= 1000]
     test_data = test_data[test_data["TIME_USED"] <= 1000]
 
-
+    # convert second to minute
     train_data['TIME_USED'] = train_data['TIME_USED'] / 60
     test_data['TIME_USED'] = test_data['TIME_USED'] / 60
-
-
 
 
     print(train_data.head())
 
     y_train = train_data['TIME_USED'].values.tolist()
     X_train = train_data.drop(['TIME_USED'], axis=1).values.tolist()
-
-    y_test = test_data['TIME_USED'].values.tolist()
-    X_test = test_data.drop(['TIME_USED'], axis=1).values.tolist()
 
     # 选一个模型
 
@@ -61,31 +59,24 @@ def do():
     # regressor = SVR()
     regressor = RandomForestRegressor()
     # regressor = AdaBoostRegressor()
-    # regressor = GradientBoostingRegressor(n_estimators=400, max_depth=4, loss='huber')
+    # regressor = GradientBoostingRegressor()
     # regressor = BaggingRegressor()
 
-    # 用训练集做交叉验证
-    # scores = cross_val_score(regressor, X_train, y_train, cv=5, scoring='r2', n_jobs=-1)
+    rfecv = RFECV(estimator=regressor, step=1, cv=4,
+                  scoring='r2', n_jobs=-1)
+    rfecv.fit(X_train, y_train)
 
-    # print('交叉验证R方值:', scores)
-    # print('交叉验证R方均值:', np.mean([scores]))
+    print("Optimal number of features : %d" % rfecv.n_features_)
 
-    # 用训练集训练模型
-    regressor.fit(X_train, y_train)
-    # 用模型预测测试集, 打分方法也是r2
-    print('测试集R方值:', regressor.score(X_test, y_test))
+    # Plot number of features VS. cross-validation scores
+    plt.figure()
+    plt.xlabel("Number of features selected")
+    plt.ylabel("Cross validation score (nb of correct classifications)")
+    plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+    plt.show()
 
-    # 对比预测数据与真实数据
-    y_predict = regressor.predict(X_test);
-    df = DataFrame()
-    df['predict'] = y_predict
-    df['real'] = y_test
-    df['diff'] = y_predict - y_test
-    print(df.head(20))
-
-    print('MAE =  ', mean_absolute_error(y_test, y_predict))
-    print('MSE =  ', mean_squared_error(y_test, y_predict))
-    print('R2 =  ', r2_score(y_test, y_predict))
+    print(rfecv.support_)
+    print(rfecv.ranking_)
 
 
 if __name__ == '__main__':
