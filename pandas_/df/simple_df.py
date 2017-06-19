@@ -10,14 +10,16 @@ df = DataFrame(
     columns=['age', 'name']
 )
 
-print(df.describe(include='all'))
+print(df[:2])
 
-print(df[df['age'] > 1])
-
-df['age'] = df['age'] * 2
-
-print(df.as_matrix())
-
-s = pd.Series(df['age'])
-
-print(s.var())
+# print(df.describe(include='all'))
+#
+# print(df[df['age'] > 1])
+#
+# df['age'] = df['age'] * 2
+#
+# print(df.as_matrix())
+#
+# s = pd.Series(df['age'])
+#
+# print(s.var())

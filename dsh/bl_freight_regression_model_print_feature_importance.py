@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 # 交叉验证器
 from sklearn.model_selection import cross_val_score
@@ -8,6 +9,7 @@ from sklearn.linear_model import SGDRegressor
 from sklearn.linear_model import Ridge
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import BaggingRegressor
@@ -33,32 +35,26 @@ def do():
     train_data = train_data.drop(train_data.columns[0], axis=1)
     test_data = test_data.drop(test_data.columns[0], axis=1)
 
-    train_data = train_data[train_data["TIME_USED"] <= 500]
-    test_data = test_data[test_data["TIME_USED"] <= 500]
-
+    train_data = train_data[train_data["TIME_USED"] <= 1000]
+    test_data = test_data[test_data["TIME_USED"] <= 1000]
 
     train_data['TIME_USED'] = train_data['TIME_USED'] / 60
     test_data['TIME_USED'] = test_data['TIME_USED'] / 60
 
-
-
-
     print(train_data.head())
 
     y_train = train_data['TIME_USED'].values.tolist()
-    X_train = train_data.drop(['TIME_USED'], axis=1).values.tolist()
-
-    y_test = test_data['TIME_USED'].values.tolist()
-    X_test = test_data.drop(['TIME_USED'], axis=1).values.tolist()
+    train_data_X = train_data.drop(['TIME_USED'], axis=1)   # drop the 'y' column
+    X_train = train_data_X.values.tolist()
 
     # 选一个模型
 
     # regressor = SGDRegressor(l1_ratio=0.1)
     # regressor = Ridge()
     # regressor = SVR()
-    regressor = RandomForestRegressor(n_estimators=10, n_jobs=-1)
+    # regressor = RandomForestRegressor(n_estimators=100, n_jobs=-1)
     # regressor = AdaBoostRegressor()
-    # regressor = GradientBoostingRegressor(n_estimators=400)
+    regressor = GradientBoostingRegressor(n_estimators=400)
     # regressor = BaggingRegressor()
 
     # 用训练集做交叉验证
@@ -69,23 +65,40 @@ def do():
 
     # 用训练集训练模型
     regressor.fit(X_train, y_train)
-    # 用模型预测测试集, 打分方法也是r2
-    print('测试集R方值:', regressor.score(X_test, y_test))
-
-    # 对比预测数据与真实数据
-    y_predict = regressor.predict(X_test);
-    df = DataFrame()
-    df['predict'] = y_predict
-    df['real'] = y_test
-    df['diff'] = y_predict - y_test
-    print(df.head(20))
-
-    print('MAE =  ', mean_absolute_error(y_test, y_predict))
-    print('MSE =  ', mean_squared_error(y_test, y_predict))
-    print('R2 =  ', r2_score(y_test, y_predict))
 
     print('feature_importances\n')
-    print(regressor.feature_importances_)   # Only tree based model has this attribute
+    print(regressor.feature_importances_)  # Only tree based model has this attribute
+
+    # print(sorted(regressor.feature_importances_))
+
+    feature_names = list(train_data_X.columns.values)
+    feature_importances_names = DataFrame()
+    feature_importances_names['name'] = feature_names
+    feature_importances_names['importance'] = regressor.feature_importances_
+
+
+    feature_importances_names.sort_values(by='importance', ascending=False, inplace=True)
+
+
+    print(feature_importances_names)
+
+    objects = feature_importances_names[:11]['name'].tolist()
+    y_pos = np.arange(len(objects))
+    performance = feature_importances_names[:11]['importance'].tolist()
+
+    fig = plt.figure()
+
+    plt.bar(y_pos, performance, align='center', alpha=0.5)
+    plt.xticks(y_pos, objects)
+    plt.ylabel('Feature Importance')
+    plt.title('Feature Importance by GBDT')
+
+
+    fig.autofmt_xdate()
+
+    plt.show()
+
+
 
 
 if __name__ == '__main__':

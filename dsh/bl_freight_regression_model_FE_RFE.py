@@ -39,8 +39,8 @@ def do():
     test_data = test_data.drop(test_data.columns[0], axis=1)
 
     # Filter the Timeused <= 1000s
-    train_data = train_data[train_data["TIME_USED"] <= 1000]
-    test_data = test_data[test_data["TIME_USED"] <= 1000]
+    train_data = train_data[train_data["TIME_USED"] <= 5000]
+    test_data = test_data[test_data["TIME_USED"] <= 5000]
 
     # convert second to minute
     train_data['TIME_USED'] = train_data['TIME_USED'] / 60
@@ -57,7 +57,7 @@ def do():
     # regressor = SGDRegressor(l1_ratio=0.1)
     # regressor = Ridge()
     # regressor = SVR()
-    regressor = RandomForestRegressor()
+    regressor = RandomForestRegressor(n_estimators=100)
     # regressor = AdaBoostRegressor()
     # regressor = GradientBoostingRegressor()
     # regressor = BaggingRegressor()
