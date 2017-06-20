@@ -25,25 +25,33 @@ def do():
     train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_train_input.csv')
     test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_test_input.csv')
 
-    drop_col_names = ['Global-SystemAdmin']
+    drop_col_names = ['Global-SystemAdmin', 'ASSIGN_COUNT']
+
+    # train_data = train_data.drop(train_data.columns[0], axis=1)
+    # test_data = test_data.drop(test_data.columns[0], axis=1)
+
+    train_data = train_data[train_data["TIME_USED"] <= 1000]
+    test_data = test_data[test_data["TIME_USED"] <= 1000]
+
+    train_data = train_data[train_data["ASSIGN_COUNT"] <= 1]
+    test_data = test_data[test_data["ASSIGN_COUNT"] <= 1]
 
     train_data = train_data.drop(drop_col_names, axis=1)
     test_data = test_data.drop(drop_col_names, axis=1)
 
-    train_data = train_data.drop(train_data.columns[0], axis=1)
-    test_data = test_data.drop(test_data.columns[0], axis=1)
-
-    train_data = train_data[train_data["TIME_USED"] <= 500]
-    test_data = test_data[test_data["TIME_USED"] <= 500]
-
-
     train_data['TIME_USED'] = train_data['TIME_USED'] / 60
     test_data['TIME_USED'] = test_data['TIME_USED'] / 60
 
+    train_data = train_data[
+        ['TIME_USED', 'TIME_USERD_MEDIAN', 'Freight_Type=Semi Auto', 'Freight_Type=No rate', 'TIME_USERD_COUNT', 'TIME_USERD_VAR', 'AWAY_COUNT',
+         'AWAY_MEAN', 'TIME_USED_BY_REGION' ,'COUNT_BY_REGION', 'TIME_USED_VAR_BY_REGION']]
+    test_data = test_data[
+        ['TIME_USED', 'TIME_USERD_MEDIAN', 'Freight_Type=Semi Auto', 'Freight_Type=No rate', 'TIME_USERD_COUNT', 'TIME_USERD_VAR', 'AWAY_COUNT',
+         'AWAY_MEAN', 'TIME_USED_BY_REGION' ,'COUNT_BY_REGION', 'TIME_USED_VAR_BY_REGION']]
 
+    print(test_data.head())
 
-
-    print(train_data.head())
+    # print(train_data.describe())
 
     y_train = train_data['TIME_USED'].values.tolist()
     X_train = train_data.drop(['TIME_USED'], axis=1).values.tolist()
@@ -56,14 +64,14 @@ def do():
     # regressor = SGDRegressor(l1_ratio=0.1)
     # regressor = Ridge()
     # regressor = SVR()
-    regressor = RandomForestRegressor(n_estimators=10, n_jobs=-1)
+    # regressor = RandomForestRegressor(n_estimators=100, n_jobs=-1)
     # regressor = AdaBoostRegressor()
-    # regressor = GradientBoostingRegressor(n_estimators=400)
+    regressor = GradientBoostingRegressor(n_estimators=500)
     # regressor = BaggingRegressor()
 
     # 用训练集做交叉验证
-    # scores = cross_val_score(regressor, X_train, y_train, cv=5, scoring='r2', n_jobs=-1)
-
+    # scores = cross_val_score(regressor, X_train, y_train, cv=4, scoring='neg_mean_absolute_error', n_jobs=-1)
+    #
     # print('交叉验证R方值:', scores)
     # print('交叉验证R方均值:', np.mean([scores]))
 
@@ -73,7 +81,7 @@ def do():
     print('测试集R方值:', regressor.score(X_test, y_test))
 
     # 对比预测数据与真实数据
-    y_predict = regressor.predict(X_test);
+    y_predict = regressor.predict(X_test)
     df = DataFrame()
     df['predict'] = y_predict
     df['real'] = y_test
@@ -85,7 +93,7 @@ def do():
     print('R2 =  ', r2_score(y_test, y_predict))
 
     print('feature_importances\n')
-    print(regressor.feature_importances_)   # Only tree based model has this attribute
+    print(regressor.feature_importances_)  # Only tree based model has this attribute
 
 
 if __name__ == '__main__':

@@ -24,8 +24,8 @@ import pandas as pd
 
 
 def do():
-    train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_train_input.csv')
-    test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_test_input.csv')
+    train_data = pd.read_csv('D:/testFiles/for_excute_folder-full data/activity_blFreight_2017_5_train_input.csv')
+    test_data = pd.read_csv('D:/testFiles/for_excute_folder-full data/activity_blFreight_2017_5_test_input.csv')
 
     drop_col_names = ['Global-SystemAdmin']
 
@@ -56,12 +56,13 @@ def do():
     # regressor = AdaBoostRegressor()
     regressor = GradientBoostingRegressor(n_estimators=400)
     # regressor = BaggingRegressor()
+    # regressor = ExtraTreesRegressor()
 
     # 用训练集做交叉验证
-    # scores = cross_val_score(regressor, X_train, y_train, cv=5, scoring='r2', n_jobs=-1)
+    scores = cross_val_score(regressor, X_train, y_train, cv=4, scoring='r2', n_jobs=-1)
 
-    # print('交叉验证R方值:', scores)
-    # print('交叉验证R方均值:', np.mean([scores]))
+    print('交叉验证R方值:', scores)
+    print('交叉验证R方均值:', np.mean([scores]))
 
     # 用训练集训练模型
     regressor.fit(X_train, y_train)
