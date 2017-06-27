@@ -35,6 +35,6 @@ print(performance_matrix_df[:6])
 
 print(performance_matrix_df.index[0])   # Get one row's index name
 
-print([0] * 3)
+print(sub_df.iloc[1]['P3'])
 
 
