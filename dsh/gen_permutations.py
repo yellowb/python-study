@@ -3,6 +3,8 @@ from pandas import DataFrame
 import pandas as pd
 import numpy as np
 
+pd.options.mode.chained_assignment = None  # default='warn'
+
 list = ['P1', 'P2', 'P3']
 gen = permutations(list, len(list))
 
@@ -30,3 +32,9 @@ sub_df['P1'] += 2
 
 
 print(performance_matrix_df[:6])
+
+print(performance_matrix_df.index[0])   # Get one row's index name
+
+print([0] * 3)
+
+
