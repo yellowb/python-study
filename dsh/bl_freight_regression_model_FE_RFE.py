@@ -1,3 +1,9 @@
+import os
+
+mingw_path = r"C:\Anaconda3_4.4.0\Library\mingw-w64\bin"
+
+os.environ['PATH'] = mingw_path + ';' + os.environ['PATH']
+
 import numpy as np
 
 # 交叉验证器
@@ -11,6 +17,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import BaggingRegressor
+
+from xgboost import XGBRegressor
 
 # 评估器
 from sklearn.metrics import mean_absolute_error
@@ -28,24 +36,13 @@ def do():
     train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_train_input.csv')
     test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_test_input.csv')
 
-    drop_col_names = ['Global-SystemAdmin'
-        # , 'AWAY_TIME', 'AWAY_COUNT', 'AWAY_MEDIAN', 'AWAY_MEAN'
-                      ]
-    train_data = train_data.drop(drop_col_names, axis=1)
-    test_data = test_data.drop(drop_col_names, axis=1)
-
-    # Drop the 1st index col
-    train_data = train_data.drop(train_data.columns[0], axis=1)
-    test_data = test_data.drop(test_data.columns[0], axis=1)
-
     # Filter the Timeused <= 1000s
-    train_data = train_data[train_data["TIME_USED"] <= 5000]
-    test_data = test_data[test_data["TIME_USED"] <= 5000]
+    train_data = train_data[train_data["TIME_USED"] <= 1000]
+    test_data = test_data[test_data["TIME_USED"] <= 1000]
 
     # convert second to minute
     train_data['TIME_USED'] = train_data['TIME_USED'] / 60
     test_data['TIME_USED'] = test_data['TIME_USED'] / 60
-
 
     print(train_data.head())
 
@@ -61,6 +58,7 @@ def do():
     # regressor = AdaBoostRegressor()
     # regressor = GradientBoostingRegressor()
     # regressor = BaggingRegressor()
+    # regressor = XGBRegressor(n_estimators=400)
 
     rfecv = RFECV(estimator=regressor, step=1, cv=4,
                   scoring='r2', n_jobs=-1)
