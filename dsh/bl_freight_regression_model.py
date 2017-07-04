@@ -31,20 +31,21 @@ from pandas import DataFrame
 import pandas as pd
 
 
-def do():
-    # train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_train_input.csv')
-    # test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_test_input.csv')
 
-    test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_train_input.csv')
-    train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_test_input.csv')
+def do():
+    train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_train_input.csv')
+    test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_test_input.csv')
+
+    # test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_train_input.csv')
+    # train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blFreight_2017_5_test_input.csv')
 
     # drop_col_names = ['Global-SystemAdmin']
 
     train_data = train_data.drop(train_data.columns[0], axis=1)
     test_data = test_data.drop(test_data.columns[0], axis=1)
 
-    train_data = train_data[train_data["TIME_USED"] <= 240]
-    test_data = test_data[test_data["TIME_USED"] <= 240]
+    train_data = train_data[train_data["TIME_USED"] <= 1000]
+    test_data = test_data[test_data["TIME_USED"] <= 1000]
 
     # train_data = train_data[train_data["ASSIGN_COUNT"] <= 1]
     # test_data = test_data[test_data["ASSIGN_COUNT"] <= 1]
