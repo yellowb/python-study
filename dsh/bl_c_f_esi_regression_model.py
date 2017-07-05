@@ -32,11 +32,11 @@ import pandas as pd
 
 
 def do():
-    # train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blCodingFormatingESI_2017_5_train_input.csv')
-    # test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blCodingFormatingESI_2017_5_test_input.csv')
+    train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blCodingFormatingESI_2017_5_train_input.csv')
+    test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blCodingFormatingESI_2017_5_test_input.csv')
 
-    test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blCodingFormatingESI_2017_5_train_input.csv')
-    train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blCodingFormatingESI_2017_5_test_input.csv')
+    # test_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blCodingFormatingESI_2017_5_train_input.csv')
+    # train_data = pd.read_csv('D:/testFiles/for_excute_folder/activity_blCodingFormatingESI_2017_5_test_input.csv')
 
     # drop_col_names = ['Global-SystemAdmin']
 
@@ -82,7 +82,7 @@ def do():
     # regressor = AdaBoostRegressor()
     # regressor = GradientBoostingRegressor(n_estimators=400)
     # regressor = BaggingRegressor()
-    regressor = XGBRegressor(n_estimators=400)
+    regressor = XGBRegressor(n_estimators=500, learning_rate=0.1)
 
     # 用训练集做交叉验证
     # scores = cross_val_score(regressor, X_train, y_train, cv=4, scoring='neg_mean_absolute_error', n_jobs=-1)
