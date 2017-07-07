@@ -21,6 +21,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import BaggingRegressor
 
 from xgboost import XGBRegressor
+from lightgbm.sklearn import LGBMRegressor
 
 # 评估器
 from sklearn.metrics import mean_absolute_error
@@ -64,6 +65,9 @@ def do():
     train_data['TIME_USERD_MEDIAN_S3'] = train_data['TIME_USERD_MEDIAN'] * train_data['bkgOffice_median_by_task_type']
     test_data['TIME_USERD_MEDIAN_S3'] = test_data['TIME_USERD_MEDIAN'] * test_data['bkgOffice_median_by_task_type']
 
+    train_data['TIME_USERD_MEDIAN_S4'] = train_data['bkgOffice_mean_by_task_type'] * train_data['bkgOffice_median_by_task_type']
+    test_data['TIME_USERD_MEDIAN_S4'] = test_data['bkgOffice_mean_by_task_type'] * test_data['bkgOffice_median_by_task_type']
+
     # train_data = train_data[
     #     ['TIME_USED', 'TIME_USERD_MEDIAN', 'Freight_Type=Semi Auto', 'Freight_Type=No rate', 'TIME_USERD_COUNT', 'TIME_USERD_VAR', 'AWAY_COUNT',
     #      'AWAY_MEAN', 'TIME_USED_BY_REGION' ,'COUNT_BY_REGION', 'TIME_USED_VAR_BY_REGION']]
@@ -92,6 +96,7 @@ def do():
     # regressor = GradientBoostingRegressor(n_estimators=400)
     # regressor = BaggingRegressor()
     regressor = XGBRegressor(n_estimators=400, learning_rate=0.02, colsample_bytree=0.1, seed=2017)
+    # regressor = LGBMRegressor(n_estimators=400, learning_rate=0.02, seed=2017, colsample_bytree=1)
 
     # 用训练集做交叉验证
     # scores = cross_val_score(regressor, X_train, y_train, cv=4, scoring='neg_mean_absolute_error', n_jobs=-1)
@@ -112,7 +117,7 @@ def do():
     df['diff'] = y_predict - y_test
     df['diff_abs'] = abs(df['diff'])
 
-    df.sort_values(by='diff', ascending=False, inplace=True)
+    df.sort_values(by='diff_abs', ascending=False, inplace=True)
 
     print(df.head(20))
 

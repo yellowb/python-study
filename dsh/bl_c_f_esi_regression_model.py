@@ -21,6 +21,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import BaggingRegressor
 
 from xgboost import XGBRegressor
+from lightgbm.sklearn import LGBMRegressor
 
 # 评估器
 from sklearn.metrics import mean_absolute_error
@@ -55,6 +56,14 @@ def do():
     train_data['TIME_USED'] = train_data['TIME_USED'] / 60
     test_data['TIME_USED'] = test_data['TIME_USED'] / 60
 
+    train_data['TIME_USERD_MEDIAN_S2'] = train_data['TIME_USERD_MEDIAN'] ** 2
+    test_data['TIME_USERD_MEDIAN_S2'] = test_data['TIME_USERD_MEDIAN'] ** 2
+
+    # bkgOffice_median_by_task_type
+
+    train_data['TIME_USERD_MEDIAN_S3'] = train_data['TIME_USERD_MEDIAN'] * train_data['bkgOffice_median_by_task_type']
+    test_data['TIME_USERD_MEDIAN_S3'] = test_data['TIME_USERD_MEDIAN'] * test_data['bkgOffice_median_by_task_type']
+
     # train_data = train_data[
     #     ['TIME_USED', 'TIME_USERD_MEDIAN', 'Freight_Type=Semi Auto', 'Freight_Type=No rate', 'TIME_USERD_COUNT', 'TIME_USERD_VAR', 'AWAY_COUNT',
     #      'AWAY_MEAN', 'TIME_USED_BY_REGION' ,'COUNT_BY_REGION', 'TIME_USED_VAR_BY_REGION']]
@@ -82,7 +91,8 @@ def do():
     # regressor = AdaBoostRegressor()
     # regressor = GradientBoostingRegressor(n_estimators=400)
     # regressor = BaggingRegressor()
-    regressor = XGBRegressor(n_estimators=500, learning_rate=0.1)
+    # regressor = XGBRegressor(n_estimators=400, learning_rate=0.02, colsample_bytree=0.1, seed=2017)
+    regressor = LGBMRegressor(n_estimators=400, learning_rate=0.02, seed=2017, colsample_bytree=1)
 
     # 用训练集做交叉验证
     # scores = cross_val_score(regressor, X_train, y_train, cv=4, scoring='neg_mean_absolute_error', n_jobs=-1)
@@ -108,8 +118,8 @@ def do():
     print('R2 =  ', r2_score(y_test, y_predict))
 
     print('feature_importances\n')
-    # print(regressor.feature_importances_)  # Only tree based model has this attribute
-    print(regressor.booster().get_score(importance_type='weight'))
+    print(regressor.feature_importances_)  # Only tree based model has this attribute
+    # print(regressor.booster().get_score(importance_type='weight'))
 
 
 if __name__ == '__main__':

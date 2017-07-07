@@ -19,6 +19,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import BaggingRegressor
 
 from xgboost import XGBRegressor
+from lightgbm.sklearn import LGBMRegressor
 
 # 评估器
 from sklearn.metrics import mean_absolute_error
@@ -44,6 +45,14 @@ def do():
     train_data['TIME_USED'] = train_data['TIME_USED'] / 60
     test_data['TIME_USED'] = test_data['TIME_USED'] / 60
 
+    train_data['TIME_USERD_MEDIAN_S2'] = train_data['TIME_USERD_MEDIAN'] ** 2
+    test_data['TIME_USERD_MEDIAN_S2'] = test_data['TIME_USERD_MEDIAN'] ** 2
+
+    # bkgOffice_median_by_task_type
+
+    train_data['TIME_USERD_MEDIAN_S3'] = train_data['TIME_USERD_MEDIAN'] * train_data['bkgOffice_median_by_task_type']
+    test_data['TIME_USERD_MEDIAN_S3'] = test_data['TIME_USERD_MEDIAN'] * test_data['bkgOffice_median_by_task_type']
+
     print(train_data.head())
 
     y_train = train_data['TIME_USED'].values.tolist()
@@ -54,13 +63,14 @@ def do():
     # regressor = SGDRegressor(l1_ratio=0.1)
     # regressor = Ridge()
     # regressor = SVR()
-    regressor = RandomForestRegressor(n_estimators=100)
+    # regressor = RandomForestRegressor(n_estimators=100)
     # regressor = AdaBoostRegressor()
     # regressor = GradientBoostingRegressor()
     # regressor = BaggingRegressor()
-    # regressor = XGBRegressor(n_estimators=400)
+    # regressor = XGBRegressor(n_estimators=400)    # NOT WORK!
+    regressor = LGBMRegressor(n_estimators=400, learning_rate=0.02, seed=2017, colsample_bytree=1)
 
-    rfecv = RFECV(estimator=regressor, step=1, cv=4,
+    rfecv = RFECV(estimator=regressor, step=1, cv=5,
                   scoring='r2', n_jobs=-1)
     rfecv.fit(X_train, y_train)
 
